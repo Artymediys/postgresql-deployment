@@ -1,0 +1,42 @@
+---
+- name: Importing PostgreSQL GPG-key
+  rpm_key:
+    state: present
+    key: "{{ postgres_gpg_key }}"
+
+- name: Installing PostgreSQL repository
+  package:
+    name: "{{ postgres_repo_link }}"
+    state: present
+
+- name: Disabling PostgreSQL module from standard repositories
+  shell: dnf -qy module disable postgresql
+
+- name: Installing PostgreSQL packages
+  yum:
+    name:
+      - postgresql{{ postgres_version }}
+      - postgresql{{ postgres_version }}-server
+      - postgresql{{ postgres_version }}-contrib
+    state: present
+
+- name: Initializing PostgreSQL data base
+  command: "/usr/pgsql-{{ postgres_version }}/bin/postgresql-{{ postgres_version }}-setup initdb"
+  args:
+    creates: "{{ postgres_data_dir }}/PG_VERSION"
+
+- name: Setting owner and access rights to data directory
+  file:
+    path: "{{ postgres_data_dir }}"
+    recurse: true
+    owner: "{{ postgres_user }}"
+    group: "{{ postgres_group }}"
+    mode: '0750'
+
+- name: Creating PostgreSQL logs directory
+  file:
+    path: "{{ postgres_log_directory }}"
+    owner: "{{ postgres_user }}"
+    group: "{{ postgres_group }}"
+    mode: '0750'
+    state: directory

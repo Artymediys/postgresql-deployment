@@ -1,0 +1,27 @@
+---
+postgres_user: 'postgres'
+
+postgres_extra_users:
+  - name: 'test_user'
+    password: 'test1234#'
+    privileges:
+      - 'CREATEDB'
+      - 'CREATEROLE'
+      - 'LOGIN'
+
+postgres_extra_databases:
+  - name: 'test_db'
+    owner: 'test_user'
+
+postgres_extra_schemas:
+  - name: 'test_schema'
+    database: 'test_db'
+    owner: 'test_user'
+
+postgres_extra_schema_privileges:
+  - name: 'test_schema'
+    database: 'test_db'
+    grantee: 'extra_user'
+    privileges:
+      - 'USAGE'
+      - 'CREATE'

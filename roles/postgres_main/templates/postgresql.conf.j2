@@ -1,0 +1,22 @@
+# PostgreSQL configuration file
+
+# Main parameters
+listen_addresses = '{{ postgres_listen_addresses }}'
+port = {{ postgres_port }}
+max_connections = {{ postgres_max_connections }}
+
+# Log parameters
+logging_collector = {{ postgres_logging_collector }}
+log_directory = '{{ postgres_log_directory }}'
+log_filename = 'postgresql-%a.log'
+log_truncate_on_rotation = on
+log_rotation_age = {{ postgres_log_rotation_age }}
+log_rotation_size = {{ postgres_log_rotation_size }}
+
+# Security and authentication parameters
+password_encryption = '{{ postgres_auth_method }}'
+
+# Extra config parameters
+{% for key, value in postgres_extra_config_parameters.items() %}
+{{ key }} = {{ value }}
+{% endfor %}

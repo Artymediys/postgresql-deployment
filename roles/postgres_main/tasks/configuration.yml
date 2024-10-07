@@ -1,0 +1,33 @@
+---
+- name: Configuring file postgresql.conf
+  template:
+    src: postgresql.conf.j2
+    dest: "{{ postgres_conf_dir }}/postgresql.conf"
+    owner: "{{ postgres_user }}"
+    group: "{{ postgres_group }}"
+    mode: '0644'
+  notify: Restart PostgreSQL
+
+- name: Configuring file pg_hba.conf
+  template:
+    src: pg_hba.conf.j2
+    dest: "{{ postgres_conf_dir }}/pg_hba.conf"
+    owner: "{{ postgres_user }}"
+    group: "{{ postgres_group }}"
+    mode: '0644'
+  notify: Restart PostgreSQL
+
+- name: Enable PostgreSQL service
+  systemd:
+    name: "{{ postgres_service_name }}"
+    enabled: true
+    state: started
+
+- name: Install password for postgres superuser
+  become_user: "{{ postgres_user }}"
+  shell: |
+    psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '{{ postgres_superuser_password }}';"
+  args:
+    executable: /bin/bash
+  when: postgres_superuser_password != ''
+  notify: Restart PostgreSQL

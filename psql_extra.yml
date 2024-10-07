@@ -1,0 +1,6 @@
+---
+- name: Adding and configuring extra PostgreSQL objects
+  hosts: postgres_demo
+  become: true
+  roles:
+    - postgres_extra

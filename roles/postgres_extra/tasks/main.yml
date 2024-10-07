@@ -1,0 +1,36 @@
+---
+- name: Creating extra users PostgreSQL
+  become_user: "{{ postgres_user }}"
+  shell: |
+    psql -tc "SELECT 1 FROM pg_roles WHERE rolname='{{ item.name }}'" | grep -q 1 || psql -c "CREATE USER {{ item.name }} WITH ENCRYPTED PASSWORD '{{ item.password }}' {% for priv in item.privileges %}{{ priv }} {% endfor %};"
+  args:
+    executable: /bin/bash
+  loop: "{{ postgres_extra_users }}"
+  when: postgres_extra_users is defined and postgres_extra_users | length > 0
+
+- name: Creating extra data bases PostgreSQL
+  become_user: "{{ postgres_user }}"
+  shell: |
+    psql -tc "SELECT 1 FROM pg_database WHERE datname='{{ item.name }}'" | grep -q 1 || psql -c "CREATE DATABASE {{ item.name }} OWNER {{ item.owner }};"
+  args:
+    executable: /bin/bash
+  loop: "{{ postgres_extra_databases }}"
+  when: postgres_extra_databases is defined and postgres_extra_databases | length > 0
+
+- name: Creating extra schemas PostgreSQL
+  become_user: "{{ postgres_user }}"
+  shell: |
+    psql -d {{ item.database }} -tc "SELECT 1 FROM information_schema.schemata WHERE schema_name = '{{ item.name }}'" | grep -q 1 || psql -d {{ item.database }} -c "CREATE SCHEMA {{ item.name }} AUTHORIZATION {{ item.owner }};"
+  args:
+    executable: /bin/bash
+  loop: "{{ postgres_extra_schemas }}"
+  when: postgres_extra_schemas is defined and postgres_extra_schemas | length > 0
+
+- name: Granting schemas privileges for users
+  become_user: "{{ postgres_user }}"
+  shell: |
+    psql -d {{ item.database }} -c "GRANT {{ item.privileges | join(', ') }} ON SCHEMA {{ item.name }} TO {{ item.grantee }};"
+  args:
+    executable: /bin/bash
+  loop: "{{ postgres_extra_schema_privileges }}"
+  when: postgres_extra_schema_privileges is defined and postgres_extra_schema_privileges | length > 0

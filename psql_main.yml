@@ -1,0 +1,6 @@
+---
+- name: Installing and configuring PostgreSQL
+  hosts: postgres_demo
+  become: true
+  roles:
+    - postgres_main

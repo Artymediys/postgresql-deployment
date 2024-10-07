@@ -1,0 +1,49 @@
+---
+postgres_version: '17'
+postgres_gpg_key: 'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL'
+postgres_repo_link: 'https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm'
+
+postgres_user: 'postgres'
+postgres_group: 'postgres'
+
+postgres_service_name: 'postgresql-{{ postgres_version }}'
+
+postgres_data_dir: '/var/lib/pgsql/{{ postgres_version }}/data'
+postgres_conf_dir: '/var/lib/pgsql/{{ postgres_version }}/data'
+postgres_log_directory: '/var/log/postgresql'
+
+postgres_superuser_password: 'secret-pass-123'
+
+postgres_port: 5432
+postgres_listen_addresses: '0.0.0.0'
+postgres_allowed_networks:
+  - { address: '0.0.0.0/0', method: 'scram-sha-256' }
+
+postgres_max_connections: '100'
+postgres_auth_method: 'scram-sha-256'
+
+postgres_logging_collector: 'on'
+postgres_log_rotation_age: '1d'
+postgres_log_rotation_size: '1GB'
+
+postgres_extra_config_parameters:
+  checkpoint_timeout: '30min'
+  checkpoint_completion_target: '0.6'
+  max_wal_size: '15GB'
+  min_wal_size: '2GB'
+
+  work_mem: '128MB'
+  maintenance_work_mem: '128MB'
+  autovacuum_work_mem: '528MB'
+
+  autovacuum_vacuum_scale_factor: '0.1'
+  autovacuum_analyze_scale_factor: '0.1'
+  autovacuum_max_workers: '5'
+  vacuum_cost_limit: '2000'
+
+  shared_buffers: '4GB'
+  effective_cache_size: '2GB'
+
+  max_locks_per_transaction: '64'
+
+  max_worker_processes: '8'
