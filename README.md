@@ -15,6 +15,8 @@
 ### Переменные роли `postgres_main`:
 - `postgres_version` – **Версия PostgreSQL**. Указывает версию PostgreSQL, которую необходимо установить и настроить (например, `'17'`).
 
+- `postgres_install_from_pgdg_repo` – **Установка PostgreSQL из внешнего репозитория**. Указывает на то, будет ли происходить установка с помощью внешнего репозитория (например, `true`)
+
 - `postgres_gpg_key` – **URL GPG-ключа PostgreSQL**. Ссылка на GPG-ключ, используемый для проверки подлинности пакетов PostgreSQL из репозитория.
 
 - `postgres_repo_link` – **Ссылка на репозиторий PostgreSQL**. URL-адрес RPM-пакета репозитория PostgreSQL, необходимого для установки PostgreSQL через менеджер пакетов (например, `yum` или `dnf`).
@@ -30,6 +32,8 @@
 - `postgres_conf_dir` – **Каталог конфигурации PostgreSQL**. Путь к директории, содержащей конфигурационные файлы PostgreSQL (например, `'/var/lib/pgsql/17/data'`).
 
 - `postgres_log_directory` – **Каталог логов PostgreSQL**. Путь к директории, где будут сохраняться лог-файлы PostgreSQL (например, `'/var/log/postgresql'`).
+
+- `postgres_pgdg_bin_path` – **Каталог бинарных файлов PostgreSQL при установке через внешний репозиторий**. Путь к директории, содержащей бинарные файлы PostgreSQL при установке репозитория PGDG (например, `'/usr/pgsql-17/bin'`).
 
 - `postgres_superuser_password` – **Пароль суперпользователя PostgreSQL**. Пароль для суперпользователя PostgreSQL (пользователя `'postgres'`).
 

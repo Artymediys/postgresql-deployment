@@ -2,26 +2,26 @@
 postgres_user: 'postgres'
 
 postgres_extra_users:
-  - name: 'test_user'
-    password: 'test1234#'
+  - name: 'tech_user'
+    password: '{{ tech_user_pass }}'
     privileges:
       - 'CREATEDB'
       - 'CREATEROLE'
       - 'LOGIN'
 
 postgres_extra_databases:
-  - name: 'test_db'
-    owner: 'test_user'
+  - name: 'super_db'
+    owner: 'tech_user'
 
 postgres_extra_schemas:
-  - name: 'test_schema'
-    database: 'test_db'
-    owner: 'test_user'
+  - name: 'super_schema'
+    database: 'super_db'
+    owner: 'tech_user'
 
-postgres_extra_schema_privileges:
-  - name: 'test_schema'
-    database: 'test_db'
-    grantee: 'extra_user'
-    privileges:
-      - 'USAGE'
-      - 'CREATE'
+#postgres_extra_schema_privileges:
+#  - name: 'test_schema'
+#    database: 'test_db'
+#    grantee: 'extra_user'
+#    privileges:
+#      - 'USAGE'
+#      - 'CREATE'

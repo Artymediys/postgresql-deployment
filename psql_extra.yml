@@ -1,6 +1,21 @@
 ---
+- name: Environment variables checking
+  hosts: localhost
+  connection: local
+  become: no
+  tasks:
+    - fail:
+        msg: "Variable 'environment' or 'service' is not specified! Please submit this variable via '-e' flag"
+      when:
+        - environment is undefined or
+          environment == none or
+          environment == ''
+        - service is undefined or
+          service == none or
+          service == ''
+
 - name: Adding and configuring extra PostgreSQL objects
-  hosts: postgres_demo
+  hosts: "postgres_{{ environment }}"
   become: true
   roles:
     - postgres_extra

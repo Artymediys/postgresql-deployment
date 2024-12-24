@@ -1,18 +1,21 @@
 ---
-postgres_version: '17'
-postgres_gpg_key: 'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL'
-postgres_repo_link: 'https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm'
+postgres_version: "16"
 
-postgres_user: 'postgres'
-postgres_group: 'postgres'
+postgres_install_from_pgdg_repo: false
+postgres_gpg_key: "https://some.url.com/repository/rpm-postgres-proxy/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL"
+postgres_repo_link: "https://some.url.com/repository/rpm-postgres-proxy/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 
-postgres_service_name: 'postgresql-{{ postgres_version }}'
+postgres_user: "postgres"
+postgres_group: "postgres"
 
-postgres_data_dir: '/var/lib/pgsql/{{ postgres_version }}/data'
-postgres_conf_dir: '/var/lib/pgsql/{{ postgres_version }}/data'
-postgres_log_directory: '/var/log/postgresql'
+postgres_service_name: "{{ 'postgresql-' + postgres_version if postgres_install_from_pgdg_repo else 'postgresql' }}"
 
-postgres_superuser_password: 'secret-pass-123'
+postgres_data_dir: "{{ '/var/lib/pgsql/' + postgres_version + '/data' if postgres_install_from_pgdg_repo else '/var/lib/pgsql/data' }}"
+postgres_conf_dir: "{{ postgres_data_dir }}"
+postgres_log_directory: "{{ '/var/lib/pgsql/' + postgres_version + '/data/pg_log' if postgres_install_from_pgdg_repo else '/var/lib/pgsql/data/pg_log' }}"
+postgres_pgdg_bin_path: "/usr/pgsql-{{ postgres_version }}/bin"
+
+postgres_superuser_password: "{{ superuser_pass }}"
 
 postgres_port: 5432
 postgres_listen_addresses: '0.0.0.0'

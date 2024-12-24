@@ -3,25 +3,31 @@
   rpm_key:
     state: present
     key: "{{ postgres_gpg_key }}"
+  when: postgres_install_from_pgdg_repo | default(false)
 
 - name: Installing PostgreSQL repository
-  package:
+  dnf:
     name: "{{ postgres_repo_link }}"
     state: present
+  when: postgres_install_from_pgdg_repo | default(false)
 
 - name: Disabling PostgreSQL module from standard repositories
   shell: dnf -qy module disable postgresql
+  when: postgres_install_from_pgdg_repo | default(false)
 
 - name: Installing PostgreSQL packages
-  yum:
+  dnf:
     name:
-      - postgresql{{ postgres_version }}
-      - postgresql{{ postgres_version }}-server
-      - postgresql{{ postgres_version }}-contrib
+      - "{{ ('@postgresql:' + postgres_version) if not postgres_install_from_pgdg_repo else ('postgresql' + postgres_version) }}"
+      - "{{ ('@postgresql:' + postgres_version + '/server') if not postgres_install_from_pgdg_repo else ('postgresql' + postgres_version + '-server') }}"
+      - "{{ ('@postgresql:' + postgres_version + '/client') if not postgres_install_from_pgdg_repo else ('postgresql' + postgres_version + '-contrib') }}"
     state: present
 
 - name: Initializing PostgreSQL data base
-  command: "/usr/pgsql-{{ postgres_version }}/bin/postgresql-{{ postgres_version }}-setup initdb"
+  command: >
+    {{ (postgres_pgdg_bin_path ~ '/postgresql-' ~ postgres_version ~ '-setup initdb')
+       if postgres_install_from_pgdg_repo else
+       'postgresql-setup --initdb' }}
   args:
     creates: "{{ postgres_data_dir }}/PG_VERSION"
 
